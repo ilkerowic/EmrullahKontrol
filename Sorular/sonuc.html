@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Sonuçlar</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      max-width: 600px;
+      margin: 40px auto;
+      text-align: center;
+      background-color: #f9f9f9;
+      color: #333;
+    }
+    h1 { margin-bottom: 10px; }
+
+    /* Katılımcı İsmi Stili */
+    #participantDisplay {
+      font-size: 24px;
+      color: #0077cc;
+      margin-bottom: 30px;
+      font-weight: 600;
+    }
+
+    /* Skor Kutusu */
+    .result-box {
+      border: 1px solid #e0e0e0;
+      padding: 30px;
+      border-radius: 12px;
+      background: #fff;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      font-size: 20px;
+      margin-bottom: 30px;
+    }
+    .score {
+      font-size: 48px;
+      font-weight: bold;
+      margin: 15px 0;
+      color: #2e7d32;
+    }
+    #detailText {
+      color: #555;
+      font-size: 18px;
+    }
+
+    /* Detaylı Liste (Soru Soru Analiz) */
+    .breakdown-container {
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: left;
+      margin-bottom: 30px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+    .breakdown-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 15px;
+      text-align: center;
+      color: #444;
+    }
+    .result-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 15px;
+      border-bottom: 1px solid #eee;
+      font-size: 16px;
+    }
+    .result-item:last-child {
+      border-bottom: none;
+    }
+    .result-item.correct {
+      background-color: #e8f5e9;
+      color: #2e7d32;
+    }
+    .result-item.wrong {
+      background-color: #ffebee;
+      color: #c62828;
+    }
+    .badge {
+      font-weight: bold;
+    }
+
+    /* Butonlar */
+    .btn-group {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+    button {
+      padding: 12px 20px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      transition: opacity 0.2s;
+    }
+    button:hover { opacity: 0.9; }
+    
+    #backBtn { background: #1976d2; color: white; }
+    #resetBtn { background: #d32f2f; color: white; }
+  </style>
+</head>
+<body>
+
+  <h1>Çalışma Sonuçları</h1>
+  
+  <div id="participantDisplay"></div>
+
+  <div class="result-box">
+    <p>Toplam Doğru Sayınız</p>
+    <div class="score" id="scoreValue">0</div>
+    <p id="detailText"></p>
+  </div>
+
+  <div class="breakdown-container" id="breakdownContainer" style="display:none;">
+    <div class="breakdown-title">Soru Bazlı Detaylar</div>
+    <div id="breakdownList"></div>
+  </div>
+
+  <div class="btn-group">
+    <button id="backBtn" onclick="goHome()">Başa Dön</button>
+    <button id="resetBtn" onclick="resetLogs()">Sonuçları Sıfırla</button>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "quizLogs";
+
+    // --- İsim Gösterme ---
+    const participantName = localStorage.getItem('currentParticipant');
+    if (participantName) {
+      document.getElementById('participantDisplay').textContent = `Sayın ${participantName}`;
+    }
+
+    function goHome() {
+      // index.html sayfasına yönlendirir (dosya yapına göre "../index.html" olabilir)
+      // Eğer klasör yapın "sorular" içindeyse bir üst dizine çıkması gerekebilir.
+      // Şimdilik varsayılan olarak ana dizine dönüş veriyorum:
+      window.location.href = '../index.html'; 
+    }
+
+    function loadLogs() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return [];
+        const logs = JSON.parse(raw);
+        return Array.isArray(logs) ? logs : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function calculateScore(logs) {
+      return logs.filter(l => l.feedbackType === "correct").length;
+    }
+
+    function resetLogs() {
+      if (!confirm("Tüm kayıtları silip en başa dönmek istediğinize emin misiniz?")) return;
+      localStorage.removeItem(STORAGE_KEY);
+      localStorage.removeItem('currentParticipant'); // İsteğe bağlı: İsmi de silebilirsin
+      
+      // Sıfırlayınca ana sayfaya atalım
+      window.location.href = "../index.html";
+    }
+
+    // --- Ana İşleyiş ---
+    const logs = loadLogs();
+    const score = calculateScore(logs);
+
+    // 1. Skoru Yazdır
+    document.getElementById("scoreValue").textContent = score;
+    // Eğer hiç log yoksa (0 soru), metni ona göre ayarla
+    const totalQuestions = logs.length;
+    document.getElementById("detailText").textContent =
+      totalQuestions > 0 
+        ? `${totalQuestions} sorudan ${score} tanesini doğru yanıtladınız.`
+        : "Henüz çözülmüş soru bulunmuyor.";
+
+    // 2. Detaylı Listeyi Oluştur
+    if (totalQuestions > 0) {
+      const container = document.getElementById("breakdownContainer");
+      const list = document.getElementById("breakdownList");
+      
+      container.style.display = "block"; // Kutuyu görünür yap
+
+      // Logları soru ID'sine göre (S1, S2...) sıralamak istersen:
+      // logs.sort((a, b) => parseInt(a.questionId.substring(1)) - parseInt(b.questionId.substring(1)));
+
+      logs.forEach(log => {
+        // questionId "S1" formatında geliyor, sadece sayıyı alalım:
+        const qNum = log.questionId.replace("S", ""); 
+        const isCorrect = (log.feedbackType === "correct");
+
+        const div = document.createElement("div");
+        div.className = isCorrect ? "result-item correct" : "result-item wrong";
+
+        div.innerHTML = `
+          <span><strong>${qNum}. Soru</strong></span>
+          <span class="badge">${isCorrect ? "DOĞRU" : "YANLIŞ"}</span>
+        `;
+        list.appendChild(div);
+      });
+    }
+  </script>
+
+</body>
+</html>
