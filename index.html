@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Çalışmaya Hoş Geldiniz</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Arial, Helvetica, sans-serif; /* Fontu diğer dosyalarla uyumlu hale getirdim */
+      text-align: center;
+      background: #f4f7f9;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 600px;
+      background: white;
+      padding: 40px;
+      margin: 80px auto;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      font-size: 28px;
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    p {
+      font-size: 18px;
+      color: #444;
+      line-height: 1.6;
+    }
+
+    /* YENİ EKLENEN GİRİŞ ALANI STİLLERİ */
+    .input-area {
+      margin: 30px 0;
+      text-align: left; /* Etiket ve input hizalaması */
+      display: inline-block; /* Ortalamak için */
+      width: 80%;
+    }
+
+    .input-label {
+      display: block;
+      font-size: 20px; /* İstediğin gibi biraz büyük punto */
+      font-weight: bold;
+      color: #0077cc;
+      margin-bottom: 10px;
+    }
+
+    .text-input {
+      width: 100%;
+      padding: 15px; /* Yazma alanı genişliği */
+      font-size: 18px; /* Yazı boyutu büyük */
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      box-sizing: border-box; /* Padding taşmasını önler */
+      transition: border-color 0.3s;
+    }
+
+    .text-input:focus {
+      border-color: #0077cc;
+      outline: none;
+    }
+
+    .start-btn {
+      margin-top: 20px;
+      padding: 14px 28px;
+      font-size: 18px;
+      border: none;
+      border-radius: 8px;
+      background: #0077cc;
+      color: white;
+      cursor: pointer;
+      transition: 0.2s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .start-btn:hover {
+      background: #005fa3;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Çalışmaya Katıldığınız İçin Teşekkür Ederiz (D) </h1>
+
+    <p>
+      Bu çalışma kapsamında hazırlanmış soruları yanıtlayarak araştırmamıza
+      değerli katkılarda bulunacaksınız.
+    </p>
+
+    <div class="input-area">
+      <label for="participantName" class="input-label">Katılımcı Adı Soyad:</label>
+      <input type="text" id="participantName" class="text-input" placeholder="Adınızı ve soyadınızı buraya yazınız...">
+    </div>
+
+    <p>
+      Başlamak için aşağıdaki butona tıklayabilirsiniz.
+    </p>
+
+    <a class="start-btn" href="#" onclick="startStudy()">Başla</a>
+  </div>
+
+  <script>
+    function startStudy() {
+      // 1. Girilen ismi al
+      const nameInput = document.getElementById('participantName');
+      const name = nameInput.value.trim();
+
+      // 2. İsim girilmemişse uyar
+      if (!name) {
+        alert("Lütfen çalışmaya başlamadan önce Adınızı ve Soyadınızı giriniz.");
+        nameInput.focus();
+        return;
+      }
+
+      // 3. İsmi kaydet (Diğer sayfalarda kullanmak istersen diye)
+      localStorage.setItem('currentParticipant', name);
+
+      // 4. İlk soruya yönlendir
+      window.location.href = "sorular/1.html";
+    }
+  </script>
+
+</body>
+</html>
