@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8" />
-  <title>1. Soru (Kontrol)</title>
+  <title>4. Soru (Kontrol)</title>
   <style>
     body {
       font-family: "Segoe UI", Arial, sans-serif;
@@ -19,6 +19,19 @@
       box-shadow: 0 2px 5px rgba(0,0,0,0.05);
     }
     h2 { margin-top: 0; color: #333; }
+
+    /* Görsel stilleri */
+    .question-image {
+      text-align: center;
+      margin: 20px 0;
+    }
+    .question-image img {
+      max-width: 100%;
+      height: auto;
+      border: 1px solid #aaa;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
 
     /* Seçenek Butonları Tasarımı */
     .options button {
@@ -58,7 +71,7 @@
       font-weight: bold;
     }
 
-    /* FEEDBACK (GERİ BİLDİRİM) ALANI */
+    /* FEEDBACK ALANI */
     #feedbackArea {
       display: none;
       margin-top: 20px;
@@ -75,13 +88,6 @@
       margin-bottom: 10px;
       display: block;
     }
-    
-    /* Metin stilleri: KONTROL GRUBU için hepsi bold */
-    #feedbackText {
-      white-space: pre-wrap;
-      font-weight: bold; 
-      color: #333; /* Varsayılan siyah */
-    }
 
     /* Durum Kutuları Kenar Renkleri */
     .status-correct {
@@ -93,6 +99,13 @@
       border-left: 5px solid #d32f2f;
       background-color: #ffebee;
       border-color: #ffcdd2;
+    }
+
+    /* Metin stilleri: KONTROL GRUBU için hepsi bold */
+    #feedbackText {
+      white-space: pre-wrap;
+      font-weight: bold; 
+      color: #333;
     }
 
     /* SONRAKİ SORU BUTONU */
@@ -123,25 +136,26 @@
 <body>
 
   <div class="question-box">
-    <p><strong>1.</strong></p>
-    <p>
-      I. Basılı öğretim materyalleri<br>
-      II. Görsel-işitsel öğretim materyalleri<br>
-      III. Modeller<br>
-      IV. İşitsel materyaller
-    </p>
+    <h2>4. Soru</h2>
+
+    <p><strong>4.</strong></p>
+
+    <div class="question-image">
+      <img src="https://raw.githubusercontent.com/ilkerowic/emrhllh/main/sorular/islemci.png" alt="Soru görseli">
+    </div>
 
     <p>
-      Güneş sisteminin nasıl çalıştığını hareketli olarak göstermek isteyen bir öğretmenin
-      yukarıdaki öğretim materyallerinden hangisini ya da hangilerini kullanması beklenir?
+      Hazırladığı görsel materyalde bilgisayarın işlemcisini öne çıkarmak isteyen Suzan Öğretmen,
+      bilgisayardan işlemciye doğru bir ok çıkartarak işlemciyi göstermiştir. Buna göre Suzan Öğretmenin
+      bu materyalde kullandığı ok hangi tasarım ilkesi ile ilişkilidir?
     </p>
 
-    <div class="options" id="optionsContainer">
-      <button id="btnA" onclick="handleAnswer('A')">A) II ve III</button>
-      <button id="btnB" onclick="handleAnswer('B')">B) I ve III</button>
-      <button id="btnC" onclick="handleAnswer('C')">C) I ve II</button>
-      <button id="btnD" onclick="handleAnswer('D')">D) I, II ve IV</button>
-      <button id="btnE" onclick="handleAnswer('E')">E) II, III ve IV</button>
+    <div class="options">
+      <button id="btnA" onclick="handleAnswer('A')">A) Yakınlık</button>
+      <button id="btnB" onclick="handleAnswer('B')">B) Uyum</button>
+      <button id="btnC" onclick="handleAnswer('C')">C) Vurgu</button>
+      <button id="btnD" onclick="handleAnswer('D')">D) İlişkililik</button>
+      <button id="btnE" onclick="handleAnswer('E')">E) Çizgi</button>
     </div>
 
     <div id="feedbackArea">
@@ -152,40 +166,37 @@
     <div id="nextButtonContainer">
       <button id="btnNext" onclick="goToNext()">Sonraki Soru</button>
     </div>
-
   </div>
 
   <script>
-    const QUESTION_ID = "S1";
-    const nextUrl = "2.html"; 
+    const QUESTION_ID = "S4";
+    const nextUrl = "5.html";
     const STORAGE_KEY = "quizLogs";
 
     // Ortak Bilişsel Bilgi (Sadece bu kalacak)
-    const cognitiveInfo = "⁉️💡Güneş sisteminin nasıl çalıştığını hareketli olarak göstermek isteyen bir öğretmen, video gibi hem görsel hem işitsel öğretim materyallerini ve modelleri kullanabilir.";
-
-    // Feedback içeriği (Kontrol Grubu)
-    // Correct: Mesaj BOŞ.
-    // Wrong: Mesaj sadece cognitiveInfo.
+    const commonCognitive = "⁉️💡Materyal tasarımında oklar önemli bir bilginin ayırt edilmesine olanak tanıyarak bilginin vurgulanmasına ve öğrencinin dikkatinin çekilmesine yardımcı olur.";
+    
+    // 4. Soruya özel feedback metinleri (Kontrol Grubu)
     const feedbackMap = {
       A: {
-        type: "correct",
-        message: "" // Doğru cevapta metin yok
+        type: "wrong",
+        message: commonCognitive
       },
       B: {
         type: "wrong",
-        message: cognitiveInfo
+        message: commonCognitive
       },
       C: {
-        type: "wrong",
-        message: cognitiveInfo
+        type: "correct",
+        message: "" // Doğru cevapta metin yok
       },
       D: {
         type: "wrong",
-        message: cognitiveInfo
+        message: commonCognitive
       },
       E: {
         type: "wrong",
-        message: cognitiveInfo
+        message: commonCognitive
       }
     };
 
@@ -214,12 +225,11 @@
         clickedBtn.innerHTML += "  (Cevabınız)";
       }
 
-      // 3. Feedback Alanını Hazırla
+      // 3. Feedback Alanını Doldur ve Göster
       const fbArea = document.getElementById('feedbackArea');
       const fbTitle = document.getElementById('feedbackTitle');
       const fbText = document.getElementById('feedbackText');
 
-      // İçeriği temizle
       fbText.innerHTML = "";
 
       if (isCorrect) {
@@ -227,16 +237,16 @@
         fbTitle.textContent = "Doğru Yanıt!";
         fbTitle.style.color = "#2e7d32"; 
         fbArea.className = "status-correct";
-        // fbText boş kalıyor
+        // fbText boş
 
       } else {
-        // --- YANLIŞ CEVAP: KIRMIZI KUTU, SADECE SİYAH BİLGİ ---
+        // --- YANLIŞ CEVAP: KIRMIZI KUTU, SİYAH BİLGİ ---
         fbTitle.textContent = "Yanlış Yanıt!";
-        fbTitle.style.color = "#c62828"; 
+        fbTitle.style.color = "#c62828";
         fbArea.className = "status-wrong";
         
-        // Sadece siyah ve bold (CSS'den geliyor boldluk)
-        fbText.style.color = "#333"; 
+        // Siyah ve Bold
+        fbText.style.color = "#333";
         fbText.textContent = fb.message;
       }
 

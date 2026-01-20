@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8" />
-  <title>1. Soru (Kontrol)</title>
+  <title>12. Soru (Kontrol)</title>
   <style>
     body {
       font-family: "Segoe UI", Arial, sans-serif;
@@ -58,7 +58,7 @@
       font-weight: bold;
     }
 
-    /* FEEDBACK (GERİ BİLDİRİM) ALANI */
+    /* FEEDBACK ALANI */
     #feedbackArea {
       display: none;
       margin-top: 20px;
@@ -75,13 +75,6 @@
       margin-bottom: 10px;
       display: block;
     }
-    
-    /* Metin stilleri: KONTROL GRUBU için hepsi bold */
-    #feedbackText {
-      white-space: pre-wrap;
-      font-weight: bold; 
-      color: #333; /* Varsayılan siyah */
-    }
 
     /* Durum Kutuları Kenar Renkleri */
     .status-correct {
@@ -93,6 +86,13 @@
       border-left: 5px solid #d32f2f;
       background-color: #ffebee;
       border-color: #ffcdd2;
+    }
+
+    /* Metin stilleri: KONTROL GRUBU için hepsi bold ve siyah */
+    #feedbackText {
+      white-space: pre-wrap;
+      font-weight: bold; 
+      color: #333;
     }
 
     /* SONRAKİ SORU BUTONU */
@@ -123,25 +123,27 @@
 <body>
 
   <div class="question-box">
-    <p><strong>1.</strong></p>
+    <h2>12. Soru</h2>
+
+    <p><strong>12.</strong></p>
+
     <p>
-      I. Basılı öğretim materyalleri<br>
-      II. Görsel-işitsel öğretim materyalleri<br>
-      III. Modeller<br>
-      IV. İşitsel materyaller
+      I. İşlenecek kazanımları<br>
+      II. Kullanılacak öğretim materyallerini<br>
+      III. Ünitenin ne kadar zamanda işleneceğini<br>
+      IV. Değerlendirme etkinliklerini
     </p>
 
     <p>
-      Güneş sisteminin nasıl çalıştığını hareketli olarak göstermek isteyen bir öğretmenin
-      yukarıdaki öğretim materyallerinden hangisini ya da hangilerini kullanması beklenir?
+      Bir ders planının yukarıda verilenlerden hangilerini göstermesi beklenir?
     </p>
 
-    <div class="options" id="optionsContainer">
-      <button id="btnA" onclick="handleAnswer('A')">A) II ve III</button>
+    <div class="options">
+      <button id="btnA" onclick="handleAnswer('A')">A) I ve II</button>
       <button id="btnB" onclick="handleAnswer('B')">B) I ve III</button>
-      <button id="btnC" onclick="handleAnswer('C')">C) I ve II</button>
+      <button id="btnC" onclick="handleAnswer('C')">C) I, II ve III</button>
       <button id="btnD" onclick="handleAnswer('D')">D) I, II ve IV</button>
-      <button id="btnE" onclick="handleAnswer('E')">E) II, III ve IV</button>
+      <button id="btnE" onclick="handleAnswer('E')">E) I, II, III ve IV</button>
     </div>
 
     <div id="feedbackArea">
@@ -152,40 +154,37 @@
     <div id="nextButtonContainer">
       <button id="btnNext" onclick="goToNext()">Sonraki Soru</button>
     </div>
-
   </div>
 
   <script>
-    const QUESTION_ID = "S1";
-    const nextUrl = "2.html"; 
+    const QUESTION_ID = "S12";
+    const nextUrl = "13.html"; // Sonraki soru dosyası
     const STORAGE_KEY = "quizLogs";
 
     // Ortak Bilişsel Bilgi (Sadece bu kalacak)
-    const cognitiveInfo = "⁉️💡Güneş sisteminin nasıl çalıştığını hareketli olarak göstermek isteyen bir öğretmen, video gibi hem görsel hem işitsel öğretim materyallerini ve modelleri kullanabilir.";
-
-    // Feedback içeriği (Kontrol Grubu)
-    // Correct: Mesaj BOŞ.
-    // Wrong: Mesaj sadece cognitiveInfo.
+    const commonCognitive = "⁉️💡Bir ders planı, işlenecek kazanımları, kullanılacak öğretim materyallerini ve değerlendirme etkinliklerini içeren kapsamlı bir belgedir. Ancak bir ünitenin ne kadar sürede tamamlanacağı ders planında değil ünitelendirilmiş yıllık planda gösterilir.";
+    
+    // 12. Soruya özel feedback metinleri (Kontrol Grubu)
     const feedbackMap = {
       A: {
-        type: "correct",
-        message: "" // Doğru cevapta metin yok
+        type: "wrong",
+        message: commonCognitive
       },
       B: {
         type: "wrong",
-        message: cognitiveInfo
+        message: commonCognitive
       },
       C: {
         type: "wrong",
-        message: cognitiveInfo
+        message: commonCognitive
       },
       D: {
-        type: "wrong",
-        message: cognitiveInfo
+        type: "correct",
+        message: "" // Doğru cevapta metin yok
       },
       E: {
         type: "wrong",
-        message: cognitiveInfo
+        message: commonCognitive
       }
     };
 
@@ -214,12 +213,11 @@
         clickedBtn.innerHTML += "  (Cevabınız)";
       }
 
-      // 3. Feedback Alanını Hazırla
+      // 3. Feedback Alanını Doldur ve Göster
       const fbArea = document.getElementById('feedbackArea');
       const fbTitle = document.getElementById('feedbackTitle');
       const fbText = document.getElementById('feedbackText');
 
-      // İçeriği temizle
       fbText.innerHTML = "";
 
       if (isCorrect) {
@@ -227,16 +225,16 @@
         fbTitle.textContent = "Doğru Yanıt!";
         fbTitle.style.color = "#2e7d32"; 
         fbArea.className = "status-correct";
-        // fbText boş kalıyor
+        // fbText boş
 
       } else {
-        // --- YANLIŞ CEVAP: KIRMIZI KUTU, SADECE SİYAH BİLGİ ---
+        // --- YANLIŞ CEVAP: KIRMIZI KUTU, SİYAH BİLGİ ---
         fbTitle.textContent = "Yanlış Yanıt!";
-        fbTitle.style.color = "#c62828"; 
+        fbTitle.style.color = "#c62828";
         fbArea.className = "status-wrong";
         
-        // Sadece siyah ve bold (CSS'den geliyor boldluk)
-        fbText.style.color = "#333"; 
+        // Siyah ve Bold
+        fbText.style.color = "#333";
         fbText.textContent = fb.message;
       }
 
