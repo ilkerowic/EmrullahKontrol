@@ -5,7 +5,7 @@
   <title>Çalışmaya Hoş Geldiniz</title>
   <style>
     body {
-      font-family: "Segoe UI", Arial, Helvetica, sans-serif; /* Fontu diğer dosyalarla uyumlu hale getirdim */
+      font-family: "Segoe UI", Arial, Helvetica, sans-serif;
       text-align: center;
       background: #f4f7f9;
       margin: 0;
@@ -33,17 +33,16 @@
       line-height: 1.6;
     }
 
-    /* YENİ EKLENEN GİRİŞ ALANI STİLLERİ */
     .input-area {
       margin: 30px 0;
-      text-align: left; /* Etiket ve input hizalaması */
-      display: inline-block; /* Ortalamak için */
+      text-align: left;
+      display: inline-block;
       width: 80%;
     }
 
     .input-label {
       display: block;
-      font-size: 20px; /* İstediğin gibi biraz büyük punto */
+      font-size: 20px;
       font-weight: bold;
       color: #0077cc;
       margin-bottom: 10px;
@@ -51,11 +50,11 @@
 
     .text-input {
       width: 100%;
-      padding: 15px; /* Yazma alanı genişliği */
-      font-size: 18px; /* Yazı boyutu büyük */
+      padding: 15px;
+      font-size: 18px;
       border: 2px solid #ddd;
       border-radius: 8px;
-      box-sizing: border-box; /* Padding taşmasını önler */
+      box-sizing: border-box;
       transition: border-color 0.3s;
     }
 
@@ -86,7 +85,7 @@
 <body>
 
   <div class="container">
-    <h1>Çalışmaya Katıldığınız İçin Teşekkür Ederiz (K) </h1>
+    <h1>Çalışmaya Katıldığınız İçin Teşekkür Ederiz (D) </h1>
 
     <p>
       Bu çalışma kapsamında hazırlanmış soruları yanıtlayarak araştırmamıza
@@ -118,11 +117,16 @@
         return;
       }
 
-      // 3. İsmi kaydet (Diğer sayfalarda kullanmak istersen diye)
+      // 3. EĞER DAHA ÖNCEKİ KATILIMCIDAN VERİ KALDIYSA TEMİZLE
+      // Bu adım, verilerin birbirine karışmaması için çok önemlidir.
+      localStorage.removeItem('quizLogs'); 
+
+      // 4. Yeni katılımcı ismini kaydet
       localStorage.setItem('currentParticipant', name);
 
-      // 4. İlk soruya yönlendir
-      window.location.href = "sorular/1.html";
+      // 5. İlk soruya yönlendir
+      // Not: Bu dosya (index.html) ile 1.html aynı klasörde (Sorular klasöründe) olmalıdır.
+      window.location.href = "1.html";
     }
   </script>
 
