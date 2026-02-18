@@ -80,6 +80,19 @@
     .start-btn:hover {
       background: #005fa3;
     }
+
+    /* Manuel Temizleme Linki Stili */
+    .reset-link {
+      display: block;
+      margin-top: 20px;
+      color: #999;
+      font-size: 14px;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+    .reset-link:hover {
+      color: #d32f2f;
+    }
   </style>
 </head>
 <body>
@@ -102,6 +115,8 @@
     </p>
 
     <a class="start-btn" href="#" onclick="startStudy()">Başla</a>
+
+    <a class="reset-link" onclick="manualReset()">Verileri ve Çerezleri Temizle</a>
   </div>
 
   <script>
@@ -117,16 +132,33 @@
         return;
       }
 
-      // 3. EĞER DAHA ÖNCEKİ KATILIMCIDAN VERİ KALDIYSA TEMİZLE
-      // Bu adım, verilerin birbirine karışmaması için çok önemlidir.
+      // 3. EĞER DAHA ÖNCEKİ KATILIMCIDAN VERİ KALDIYSA TEMİZLE (Otomatik)
       localStorage.removeItem('quizLogs'); 
+      localStorage.removeItem('currentParticipant');
 
       // 4. Yeni katılımcı ismini kaydet
       localStorage.setItem('currentParticipant', name);
 
       // 5. İlk soruya yönlendir
-
       window.location.href = "https://ilkerowic.github.io/EmrullahKontrol/Sorular/1.html";
+    }
+
+    // Manuel Temizleme Fonksiyonu
+    function manualReset() {
+      if(confirm("Tüm kayıtlı veriler ve çerezler silinecektir. Yeni bir katılımcı için sayfayı hazırlamak istiyor musunuz?")) {
+        
+        // 1. LocalStorage Temizle
+        localStorage.clear();
+
+        // 2. Çerezleri (Cookies) Temizle
+        document.cookie.split(";").forEach(function(c) { 
+          document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+        });
+
+        // 3. Inputu temizle ve bilgi ver
+        document.getElementById('participantName').value = "";
+        alert("Veriler başarıyla temizlendi. Yeni katılımcı için hazır.");
+      }
     }
   </script>
 
