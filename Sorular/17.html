@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8"/>
+<title>17. Soru</title>
+<style>
+  html, body { height: 100%; }
+  body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    line-height: 1.6;
+    background-color: #f9f9f9;
+    margin: 0;
+    overflow: hidden;
+  }
+  .page {
+    max-width: 920px;
+    margin: 40px auto;
+    padding: 0 20px;
+    box-sizing: border-box;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  .question-box {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  }
+  .options button {
+    display: block; width: 100%; margin-bottom: 10px;
+    padding: 12px 15px; border-radius: 8px;
+    border: 2px solid #e0e0e0; background: #fff;
+    cursor: pointer; text-align: left; font-size: 16px;
+    transition: all 0.2s; position: relative;
+  }
+  .options button:hover:not([disabled]) {
+    background-color: #f0f8ff; border-color: #b0d4f1;
+  }
+  .options button .opt-text { display: inline-block; }
+  .options button .opt-tag {
+    float: right; min-width: 130px;
+    text-align: right; font-weight: 600;
+  }
+  .options button:disabled { cursor: default; color: #888; }
+  .options button.selected-correct {
+    border-color: #4CAF50; background-color: #c8e6c9;
+    color: #1b5e20; font-weight: bold;
+  }
+  .options button.selected-wrong {
+    border-color: #F44336; background-color: #ffebee;
+    color: #c62828; font-weight: bold;
+  }
+  .top-box {
+    margin-top: 14px; padding: 10px 14px; min-height: 42px;
+    border: 2px solid #c8e6c9; border-radius: 8px;
+    background: #f1f8f1; font-size: 15px; font-weight: bold; color: #1b5e20;
+  }
+  .top-box.filled { border-color: #2e7d32; background: #e8f5e9; }
+  .feedback-gap { height: 20px; }
+  .feedback-col {
+    display: flex; flex-direction: column; gap: 8px;
+    min-height: 60px; visibility: hidden; opacity: 0;
+    pointer-events: none; transition: opacity 0.2s ease-in;
+  }
+  .feedback-col.visible {
+    visibility: visible; opacity: 1; pointer-events: auto;
+    animation: fadeIn 0.2s ease-in;
+  }
+  .feedback-cognitive {
+    background: #f9f9f9; border-radius: 8px; padding: 12px 16px;
+    border: 2px solid #1565c0;
+  }
+  .feedback-cognitive .fb-content {
+    color: #000; font-size: 15px; font-weight: 700;
+  }
+  #nextButtonContainer { display: none; margin-top: 16px; }
+  #btnNext {
+    background-color: #1976d2; color: white; border: none;
+    padding: 10px 22px; font-size: 15px; border-radius: 20px;
+    cursor: pointer; transition: background 0.2s;
+  }
+  #btnNext:hover { background-color: #1565c0; }
+  @keyframes fadeIn {
+    from { opacity: 0; } to { opacity: 1; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="question-box">
+<p><strong>17.</strong></p>
+
+    <p>
+      I. Doküman Kamera<br>
+      II. Gösterim tahtası<br>
+      III. Tepegöz<br>
+      IV. Opak projektör
+    </p>
+
+    <p>
+      Sinan Öğretmen, kalabalık ve geniş bir sınıfta öğrencilere origami (kağıt katlama sanatı) dersi verecektir.
+      Bunun için gösterip-yaptırma tekniğini kullanmak isteyen öğretmen, katlamaları sınıf içerisinde önce kendisi yapacak
+      sonra da öğrencilerin yapmasını isteyecektir.<br>
+      Sinan Öğretmenin sınıftaki tüm öğrencilerle eş zamanlı olarak bu
+      çalışmayı gerçekleştirmesi için yukarıdaki öğretim araçlarının hangisinden ya da hangilerinden faydalanabilir?
+    </p>
+<div class="options">
+<button id="btnA" onclick="handleAnswer('A')"><span class="opt-text">A) I ve II</span><span class="opt-tag"></span></button>
+<button id="btnB" onclick="handleAnswer('B')"><span class="opt-text">B) I ve III</span><span class="opt-tag"></span></button>
+<button id="btnC" onclick="handleAnswer('C')"><span class="opt-text">C) Yalnız I</span><span class="opt-tag"></span></button>
+<button id="btnD" onclick="handleAnswer('D')"><span class="opt-text">D) II ve IV</span><span class="opt-tag"></span></button>
+<button id="btnE" onclick="handleAnswer('E')"><span class="opt-text">E) III ve IV</span><span class="opt-tag"></span></button>
+</div>
+    <div class="top-box" id="topBox"></div>
+    <div class="feedback-gap"></div>
+    <div class="feedback-col" id="feedbackCol">
+      <div class="feedback-cognitive">
+        <div class="fb-content" id="cognitiveText"></div>
+      </div>
+    </div>
+    <div id="nextButtonContainer">
+      <button id="btnNext" onclick="goToNext()">Sonraki Soru</button>
+    </div>
+  </div>
+</div>
+<script>
+  const QUESTION_ID = "S17";
+  const nextUrl = "18.html";
+  const STORAGE_KEY = "quizLogs";
+  const CORRECT_OPTION = "C";
+  const feedbackMap = {
+      
+            "A": {
+                  "type": "wrong",
+                  "cognitive": "⁉️💡Doküman kamerasıyla origami gibi üç boyutlu öğretim materyallerinin yapım süreci eş zamanlı olarak ayrıntılı bir şekilde öğrencilere sunulabilir. Diğer araçlarla üç boyutlu materyallerin görüntülerinin yansıtılması mümkün değildir."
+            },
+            "B": {
+                  "type": "wrong",
+                  "cognitive": "⁉️💡Doküman kamerasıyla origami gibi üç boyutlu öğretim materyallerinin yapım süreci eş zamanlı olarak ayrıntılı bir şekilde öğrencilere sunulabilir. Diğer araçlarla üç boyutlu materyallerin görüntülerinin yansıtılması mümkün değildir."
+            },
+            "C": {
+                  "type": "correct",
+                  "correctMsg": "✓ Doğru Yanıt! 👍🏻"
+            },
+            "D": {
+                  "type": "wrong",
+                  "cognitive": "⁉️💡Doküman kamerasıyla origami gibi üç boyutlu öğretim materyallerinin yapım süreci eş zamanlı olarak ayrıntılı bir şekilde öğrencilere sunulabilir. Diğer araçlarla üç boyutlu materyallerin görüntülerinin yansıtılması mümkün değildir."
+            },
+            "E": {
+                  "type": "wrong",
+                  "cognitive": "⁉️💡Doküman kamerasıyla origami gibi üç boyutlu öğretim materyallerinin yapım süreci eş zamanlı olarak ayrıntılı bir şekilde öğrencilere sunulabilir. Diğer araçlarla üç boyutlu materyallerin görüntülerinin yansıtılması mümkün değildir."
+            }
+      
+  };
+  let answered = false;
+  function handleAnswer(optionKey) {
+    if (answered) return;
+    answered = true;
+    const fb = feedbackMap[optionKey];
+    if (!fb) return;
+    document.querySelectorAll('.options button').forEach(btn => btn.disabled = true);
+    const clickedBtn = document.getElementById('btn' + optionKey);
+    const topBox = document.getElementById('topBox');
+    if (fb.type === "correct") {
+      clickedBtn.classList.add('selected-correct');
+      clickedBtn.querySelector(".opt-tag").textContent = "(Doğru Cevap)";
+      topBox.textContent = fb.correctMsg;
+      topBox.classList.add('filled');
+    } else {
+      clickedBtn.classList.add('selected-wrong');
+      clickedBtn.querySelector(".opt-tag").textContent = "(Yanlış Yanıt!)";
+      document.getElementById('cognitiveText').textContent = fb.cognitive;
+      document.getElementById('feedbackCol').classList.add('visible');
+    }
+    document.getElementById('nextButtonContainer').style.display = "block";
+    saveLog(optionKey, fb.type);
+  }
+  function goToNext() { if (nextUrl) window.location.href = nextUrl; }
+  function saveLog(selectedOption, feedbackType) {
+    const entry = { questionId: QUESTION_ID, selectedOption, feedbackType, timestamp: new Date().toISOString() };
+    let logs = [];
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) { logs = JSON.parse(raw); if (!Array.isArray(logs)) logs = []; }
+    } catch(e) { logs = []; }
+    logs.push(entry);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(logs));
+  }
+</script>
+</body>
+</html>
